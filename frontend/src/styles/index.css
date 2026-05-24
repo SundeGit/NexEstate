@@ -1,0 +1,25 @@
+.hero-section {
+    background-image: url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600);
+    background-size: cover;
+    background-position: center;
+    min-height: 600px;
+    position: relative;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+input.rbt-input-main::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+input.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+textarea.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
