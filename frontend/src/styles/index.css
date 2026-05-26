@@ -23,3 +23,35 @@ input.form-control::placeholder {
 textarea.form-control::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
+
+.ribbon {
+  position: absolute;
+  top: 15px;
+  left: -5px;
+  background-color: #4caf50;
+  color: white;
+  padding: 5px 15px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.ribbon::before {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  border-left: 5px solid #2d6a2d;
+  border-bottom: 5px solid transparent;
+}
+
+.review-card {
+  height: 250px;
+  box-shadow: 4px 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: #4caf50 !important;
+  font-size: 25px !important;
+}
