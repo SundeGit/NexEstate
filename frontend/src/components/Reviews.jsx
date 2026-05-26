@@ -2,22 +2,7 @@ import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Container } from "react-bootstrap";
-
-const getInitials = (fullName) => {
-    const name = fullName.trim().split(' ')[0];
-    const surname = fullName.trim().split(' ')[1];
-    if(name != null && surname != null)
-        return `${name[0]}${surname[0]}`.toUpperCase();
-    else
-        return `${name[0]}`;
-}
-
-const reviews = [
-  { _id: '1', fullName: 'Marko Petrović', text: 'Odličan sajt, pronašao sam stan za koji sam dugo tražio. Preporučujem svima!' },
-  { _id: '2', fullName: 'Jovana Nikolić', text: 'Veoma jednostavno za korišćenje, oglasi su detaljni i ažurni.' },
-  { _id: '3', fullName: 'Stefan Jovanović', text: 'Prodao sam stan za kratko vreme zahvaljujući NexEstate platformi.' },
-  { _id: '4', fullName: 'Ana Đorđević', text: 'Preporučujem svima koji traže ili prodaju nekretnine.' },
-];
+import { reviews, getInitials } from '../assets/testData';
 
 const settings = {
   dots: true,

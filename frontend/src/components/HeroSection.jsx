@@ -5,19 +5,7 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-
-const cities = [
-  { value: 'novi-sad', label: 'Novi Sad' },
-  { value: 'beograd', label: 'Beograd' },
-  { value: 'nis', label: 'Niš' },
-  { value: 'kragujevac', label: 'Kragujevac' },
-  { value: 'subotica', label: 'Subotica' },
-  { value: 'zrenjanin', label: 'Zrenjanin' },
-  { value: 'pancevo', label: 'Pančevo' },
-  { value: 'cacak', label: 'Čačak' },
-  { value: 'novi-pazar', label: 'Novi Pazar' },
-  { value: 'kraljevo', label: 'Kraljevo' },
-];
+import { cities } from '../assets/testData';
 
 const HeroSection = () => {
 
@@ -92,7 +80,7 @@ const HeroSection = () => {
 
                         <div className="d-flex gap-2 align-items-center">
                             <Button variant="success" size="lg" className="w-50">Pretraži</Button>
-                            <LinkContainer to="/properties">
+                            <LinkContainer to="/property">
                                 <Button variant="outline-light" size="lg" className="w-50">Svi oglasi</Button>
                             </LinkContainer>
                         </div>

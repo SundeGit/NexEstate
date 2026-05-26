@@ -1,6 +1,6 @@
 import { Container, Row, Col, Form, Button, FormGroup } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { FaFacebook, FaInstagram, FaBuilding, FaPhone, FaHome, FaTag, FaDollarSign } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaBuilding, FaPhone, FaHome, FaTag, FaDollarSign, FaClipboardList, FaUser } from 'react-icons/fa';
 import logo from '../assets/NexEstateLogo.png';
 
 const Footer = () => {
@@ -34,9 +34,16 @@ const Footer = () => {
                                 </LinkContainer>
                             </li>
                             <li className="mb-2">
-                                <LinkContainer to="/">
+                                <LinkContainer to="/property">
                                     <a className="text-white text-decoration-none">
                                         <FaBuilding className="me-2"/> Oglasi
+                                    </a>
+                                </LinkContainer>
+                            </li>                            
+                            <li className="mb-2">
+                                <LinkContainer to="/">
+                                    <a className="text-white text-decoration-none">
+                                        <FaClipboardList className="me-2" /> Moji oglasi
                                     </a>
                                 </LinkContainer>
                             </li>
@@ -44,6 +51,13 @@ const Footer = () => {
                                 <LinkContainer to="/">
                                     <a className="text-white text-decoration-none">
                                         <FaDollarSign className="me-2" /> Cenovnik
+                                    </a>
+                                </LinkContainer>
+                            </li>
+                            <li className="mb-2">
+                                <LinkContainer to="/">
+                                    <a className="text-white text-decoration-none">
+                                        <FaUser className="me-2" /> O nama
                                     </a>
                                 </LinkContainer>
                             </li>
