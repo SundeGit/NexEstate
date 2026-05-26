@@ -14,8 +14,10 @@ const AboutSection = () => {
                 <Col md={6}>
                     <h2 className="fw bold mb-3">O nama</h2>
                     <p className="text-muted">
-                    NexEstate je moderna platforma za kupovinu, prodaju i iznajmljivanje nekretnina.
+                    NexEstate je moderna platforma za kupovinu i prodaju nekretnina.
                     Naš cilj je da pronalazak savršenog doma bude što jednostavniji i brži.
+                    Poseban fokus stavlja se na profesionalnost, transparentnost i poverenje u radu sa klijentima. 
+                    Zahvaljujući kvalitetnoj usluzi i savremenom pristupu poslovanju, kompanija uspešno gradi prepoznatljivost na tržištu nekretnina. 
                     </p>
                     <LinkContainer to="/">
                         <a className="text-success text-decoration-none fw-bold">

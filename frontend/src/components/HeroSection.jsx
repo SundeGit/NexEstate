@@ -1,4 +1,5 @@
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import { useState } from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -89,7 +90,13 @@ const HeroSection = () => {
                             </Col>
                         </Row>
 
-                        <Button variant="success" size="lg" className="w-100">Pretraži</Button>
+                        <div className="d-flex gap-2 align-items-center">
+                            <Button variant="success" size="lg" className="w-50">Pretraži</Button>
+                            <LinkContainer to="/properties">
+                                <Button variant="outline-light" size="lg" className="w-50">Svi oglasi</Button>
+                            </LinkContainer>
+                        </div>
+                        
                     </div>
                 </Container>
             </div>

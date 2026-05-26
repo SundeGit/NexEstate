@@ -7,11 +7,15 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import HomeScreen from './screens/HomeScreen';
+import PropertiesScreen from './screens/PropertiesScreen';
+import PropertyInfoScreen from './screens/PropertyInfoScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<HomeScreen />} />
+      <Route path="/properties" element={<PropertiesScreen />} />
+      <Route path="/properties/:id" element={<PropertyInfoScreen />} />
     </Route>
   )
 );

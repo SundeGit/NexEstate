@@ -4,8 +4,8 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 
 const PropertyCard = ({ property }) => {
     return (
-        <LinkContainer to="/">
-            <Card className="bg-dark text-white border-secondary h-100 position-relative" style={{ cursor: 'pointer' }}>
+        <LinkContainer to={`/property/${property._id}`}>
+            <Card className="bg-dark text-white border-secondary h-100 position-relative">
                 <div className="ribbon">★ Istaknuto</div>
                 <Card.Img 
                 variant="top"

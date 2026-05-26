@@ -24,6 +24,10 @@ textarea.form-control::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 
+.card {
+  cursor: pointer;
+}
+
 .ribbon {
   position: absolute;
   top: 15px;
