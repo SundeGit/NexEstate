@@ -19,7 +19,7 @@ const PropertyCard = ({ property, preview = false }) => {
                     <FaMapMarkerAlt className="me-1"/>{property.location}
                 </Card.Text>
                 <Card.Text>
-                    <small>{property.type} {property.area} m²</small>
+                    <small>{property.type} · {property.area} m²</small>
                 </Card.Text>
             </Card.Body>
             </Card>

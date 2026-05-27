@@ -41,7 +41,7 @@ const Footer = () => {
                                 </LinkContainer>
                             </li>                            
                             <li className="mb-2">
-                                <LinkContainer to="/">
+                                <LinkContainer to="/myPropertyListings">
                                     <a className="text-white text-decoration-none">
                                         <FaClipboardList className="me-2" /> Moji oglasi
                                     </a>

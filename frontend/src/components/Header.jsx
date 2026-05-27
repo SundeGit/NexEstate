@@ -29,7 +29,7 @@ const Header = () => {
                             <FaDollarSign /> Cenovnik
                         </Nav.Link>
                     </LinkContainer>
-                    <LinkContainer to="/">
+                    <LinkContainer to="/myPropertyListings">
                         <Nav.Link>
                             <FaClipboardList /> Moji oglasi
                         </Nav.Link>

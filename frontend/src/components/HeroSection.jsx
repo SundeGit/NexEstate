@@ -79,7 +79,9 @@ const HeroSection = () => {
                         </Row>
 
                         <div className="d-flex gap-2 align-items-center">
-                            <Button variant="success" size="lg" className="w-50">Pretraži</Button>
+                            <LinkContainer to="/property">
+                                <Button variant="success" size="lg" className="w-50">Pretraži</Button>
+                            </LinkContainer>
                             <LinkContainer to="/property">
                                 <Button variant="outline-light" size="lg" className="w-50">Svi oglasi</Button>
                             </LinkContainer>
