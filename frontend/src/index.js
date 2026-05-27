@@ -9,6 +9,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import HomeScreen from './screens/HomeScreen';
 import PropertiesScreen from './screens/PropertiesScreen';
 import PropertyInfoScreen from './screens/PropertyInfoScreen';
+import LoginScreen from './screens/LoginScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,6 +17,7 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<HomeScreen />} />
       <Route path="/property" element={<PropertiesScreen />} />
       <Route path="/property/:id" element={<PropertyInfoScreen />} />
+      <Route path="/login" element={<LoginScreen />} />
     </Route>
   )
 );

@@ -34,7 +34,7 @@ const Header = () => {
                             <FaClipboardList /> Moji oglasi
                         </Nav.Link>
                     </LinkContainer>
-                    <LinkContainer to="/">
+                    <LinkContainer to="/login">
                         <Nav.Link>
                             <FaSignInAlt /> Prijavi se
                         </Nav.Link>
