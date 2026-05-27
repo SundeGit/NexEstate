@@ -19,7 +19,7 @@ const Header = () => {
                 <Navbar.Collapse id="navbarContent">
 
                 <Nav className="ms-auto align-items-center gap-2">
-                    <LinkContainer to="/">
+                    <LinkContainer to="/createPropertyListing">
                         <Nav.Link>
                             <Button variant="success" size="sm">Postavi oglas <FaPlus /></Button>
                         </Nav.Link>

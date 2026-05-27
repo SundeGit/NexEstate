@@ -104,7 +104,7 @@ const PropertiesScreen = () => {
                                     <option value="potkrovlje">Potkrovlje</option>
                                     <option value="1">Prvi</option>
                                     <option value="2">Drugi</option>
-                                    <option value="3">Treci</option>
+                                    <option value="3">Treći</option>
                                     <option value="4">Četvrti</option>
                                     <option value="5">Peti</option>
                                     <option value="6">Šesti</option>

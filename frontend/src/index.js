@@ -10,6 +10,7 @@ import HomeScreen from './screens/HomeScreen';
 import PropertiesScreen from './screens/PropertiesScreen';
 import PropertyInfoScreen from './screens/PropertyInfoScreen';
 import LoginScreen from './screens/LoginScreen';
+import CreatePropertyListing from './screens/CreatePropertyListing';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +19,7 @@ const router = createBrowserRouter(
       <Route path="/property" element={<PropertiesScreen />} />
       <Route path="/property/:id" element={<PropertyInfoScreen />} />
       <Route path="/login" element={<LoginScreen />} />
+      <Route path="/createPropertyListing" element={<CreatePropertyListing />} />
     </Route>
   )
 );
