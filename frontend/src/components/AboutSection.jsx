@@ -19,7 +19,7 @@ const AboutSection = () => {
                     Poseban fokus stavlja se na profesionalnost, transparentnost i poverenje u radu sa klijentima. 
                     Zahvaljujući kvalitetnoj usluzi i savremenom pristupu poslovanju, kompanija uspešno gradi prepoznatljivost na tržištu nekretnina. 
                     </p>
-                    <LinkContainer to="/">
+                    <LinkContainer to="/aboutUs">
                         <a className="text-success text-decoration-none fw-bold">
                             Saznajte više →
                         </a>

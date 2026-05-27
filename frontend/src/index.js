@@ -12,6 +12,8 @@ import PropertyInfoScreen from './screens/PropertyInfoScreen';
 import LoginScreen from './screens/LoginScreen';
 import CreatePropertyListing from './screens/CreatePropertyListing';
 import MyPropertyListingsScreen from './screens/MyPropertyListingsScreen';
+import AboutUsScreen from './screens/AboutUsScreen';
+import PricingScreen from './screens/PricingScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +24,8 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/createPropertyListing" element={<CreatePropertyListing />} />
       <Route path="/myPropertyListings" element={<MyPropertyListingsScreen />} />
+      <Route path="/aboutUs" element={<AboutUsScreen />} />
+      <Route path="/pricing" element={<PricingScreen />} />
     </Route>
   )
 );

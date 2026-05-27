@@ -48,14 +48,14 @@ const Footer = () => {
                                 </LinkContainer>
                             </li>
                             <li className="mb-2">
-                                <LinkContainer to="/">
+                                <LinkContainer to="/pricing">
                                     <a className="text-white text-decoration-none">
                                         <FaDollarSign className="me-2" /> Cenovnik
                                     </a>
                                 </LinkContainer>
                             </li>
                             <li className="mb-2">
-                                <LinkContainer to="/">
+                                <LinkContainer to="/aboutUs">
                                     <a className="text-white text-decoration-none">
                                         <FaUser className="me-2" /> O nama
                                     </a>

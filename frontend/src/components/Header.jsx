@@ -24,7 +24,7 @@ const Header = () => {
                             <Button variant="success" size="sm">Postavi oglas <FaPlus /></Button>
                         </Nav.Link>
                     </LinkContainer>
-                    <LinkContainer to="/">
+                    <LinkContainer to="/pricing">
                         <Nav.Link>
                             <FaDollarSign /> Cenovnik
                         </Nav.Link>
