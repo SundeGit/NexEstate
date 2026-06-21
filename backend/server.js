@@ -15,6 +15,15 @@ app.use(express.urlencoded({ extended: true }));
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
+const propertyRoutes = require("./routes/propertyRoutes");
+app.use("/api/properties", propertyRoutes);
+
+const reviewRoutes = require("./routes/reviewRoutes");
+app.use("/api/reviews", reviewRoutes);
+
+const userRoutes = require("./routes/userRoutes");
+app.use("/api/users", userRoutes);
+
 app.get("/", (req, res) => {
   res.send("NexEstate API is running...");
 });
