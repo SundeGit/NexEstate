@@ -24,6 +24,9 @@ app.use("/api/reviews", reviewRoutes);
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
 
+const paypalRoutes = require("./routes/paypalRoutes");
+app.use("/api/paypal", paypalRoutes);
+
 app.get("/", (req, res) => {
   res.send("NexEstate API is running...");
 });
