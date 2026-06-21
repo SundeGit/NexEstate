@@ -1,5 +1,6 @@
 const expressAsyncHandler = require("express-async-handler");
 const Property = require("../models/Property");
+const geocoder = require("../config/geocoder");
 
 const getProperties = expressAsyncHandler(async (req, res) => {
   const pageSize = 9;
@@ -47,45 +48,50 @@ const getPropertyById = expressAsyncHandler(async (req, res) => {
 });
 
 const createProperty = expressAsyncHandler(async (req, res) => {
-  const {
-    title,
-    description,
-    price,
-    type,
-    rooms,
-    area,
-    floor,
-    furnished,
-    parking,
-    elevator,
-    heating,
-    city,
-    address,
-    coordinates,
-  } = req.body;
+    const {
+        title,
+        description,
+        price,
+        type,
+        rooms,
+        area,
+        floor,
+        furnished,
+        parking,
+        elevator,
+        heating,
+        city,
+        address,
+    } = req.body;
 
-  const images = req.files ? req.files.map((file) => file.path) : [];
+    const geoData = await geocoder.geocode(`${address}, ${city}`);
+    const coordinates =
+        geoData.length > 0
+        ? { lat: geoData[0].latitude, lng: geoData[0].longitude }
+        : { lat: null, lng: null };
 
-  const property = await Property.create({
-    title,
-    description,
-    price,
-    type,
-    rooms,
-    area,
-    floor,
-    furnished,
-    parking,
-    elevator,
-    heating,
-    city,
-    address,
-    coordinates,
-    images,
-    owner: req.user._id,
-  });
+    const images = req.files ? req.files.map((file) => file.path) : [];
 
-  res.status(201).json(property);
+    const property = await Property.create({
+        title,
+        description,
+        price,
+        type,
+        rooms,
+        area,
+        floor,
+        furnished,
+        parking,
+        elevator,
+        heating,
+        city,
+        address,
+        coordinates,
+        images,
+        owner: req.user._id,
+    });
+
+    res.status(201).json(property);
 });
 
 const updateProperty = expressAsyncHandler(async (req, res) => {
