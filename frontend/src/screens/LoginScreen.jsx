@@ -18,6 +18,7 @@ const LoginScreen = () => {
     const [registerEmail, setRegisterEmail] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [phone, setPhone] = useState('');
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -57,6 +58,7 @@ const LoginScreen = () => {
             name,
             email: registerEmail,
             password: registerPassword,
+            phone,
         });
         dispatch(setCredentials(data));
         toast.success('Uspešno ste se registrovali!');
@@ -101,6 +103,7 @@ const LoginScreen = () => {
                             <>
                                 <Form.Control type="text" placeholder="Ime" className="bg-dark text-white border-secondary mb-3" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                                 <Form.Control type="text" placeholder="Prezime" className="bg-dark text-white border-secondary mb-3" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                                <Form.Control type="tel" placeholder="Broj telefona" className="bg-dark text-white border-secondary mb-3" value={phone} onChange={(e) => setPhone(e.target.value)} />
                                 <Form.Control type="email" placeholder="Email" className="bg-dark text-white border-secondary mb-3" value={registerEmail} onChange={(e) => setRegisterEmail(e.target.value)} />
                                 <Form.Control type="password" placeholder="Lozinka" className="bg-dark text-white border-secondary mb-3" value={registerPassword} onChange={(e) => setRegisterPassword(e.target.value)} />
                                 <Form.Control type="password" placeholder="Potvrdi lozinku" className="bg-dark text-white border-secondary mb-4" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />

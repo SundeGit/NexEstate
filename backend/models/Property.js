@@ -20,7 +20,7 @@ const propertySchema = new mongoose.Schema(
       required: true,
     },
     rooms: {
-      type: Number, // 0.5, 1, 1.5, 2, 2.5, 3, 4, 4+
+      type: Number,
       required: false,
     },
     area: {
@@ -28,7 +28,7 @@ const propertySchema = new mongoose.Schema(
       required: true,
     },
     floor: {
-      type: Number,
+      type: String,
       default: 0,
     },
     furnished: {

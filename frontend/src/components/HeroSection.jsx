@@ -1,11 +1,13 @@
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import { cities } from '../assets/testData';
+import axiosInstance from '../utils/axiosInstance';
+
 
 const HeroSection = () => {
 
@@ -13,6 +15,33 @@ const HeroSection = () => {
     const [type, setType] = useState([]);
     const [price, setPrice] = useState([0, 500000]);
     const [area, setArea] = useState([0, 500]);
+    const navigate = useNavigate();
+
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+        if (city.length > 0) params.append('city', city[0]);
+        if (type) params.append('type', type);
+        if (price[0] > 0) params.append('minPrice', price[0]);
+        if (price[1] < 500000) params.append('maxPrice', price[1]);
+        if (area[0] > 0) params.append('minArea', area[0]);
+        if (area[1] < 500) params.append('maxArea', area[1]);
+        navigate(`/property?${params.toString()}`);
+    };
+
+    const [cities, setCities] = useState([]);
+
+    useEffect(() => {
+        const fetchCities = async () => {
+            try {
+                const { data } = await axiosInstance.get('/properties');
+                const uniqueCities = [...new Set(data.properties.map(p => p.city))];
+                setCities(uniqueCities);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchCities();
+    }, []);
 
     return (
         <div className="hero-section">
@@ -79,9 +108,7 @@ const HeroSection = () => {
                         </Row>
 
                         <div className="d-flex gap-2 align-items-center">
-                            <LinkContainer to="/property">
-                                <Button variant="success" size="lg" className="w-50">Pretraži</Button>
-                            </LinkContainer>
+                            <Button variant="success" size="lg" className="w-50" onClick={handleSearch} >Pretraži</Button>
                             <LinkContainer to="/property">
                                 <Button variant="outline-light" size="lg" className="w-50">Svi oglasi</Button>
                             </LinkContainer>

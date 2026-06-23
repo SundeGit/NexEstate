@@ -26,7 +26,12 @@ const PricingScreen = () => {
               </tr>
               <tr>
                 <td className="text-start fw-bold">Trajanje</td>
-                <td>30 dana</td>
+                <td>∞</td>
+                <td>∞</td>
+              </tr>
+              <tr>
+                <td className="text-start fw-bold">Istaknut</td>
+                <td>/</td>
                 <td>30 dana</td>
               </tr>
               <tr>

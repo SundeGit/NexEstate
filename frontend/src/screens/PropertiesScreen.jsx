@@ -6,14 +6,24 @@ import PropertyCard from '../components/PropertyCard';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Collapse } from 'react-bootstrap';
 import axiosInstance from '../utils/axiosInstance';
+import { useLocation } from 'react-router-dom';
 
 const PropertiesScreen = () => {
 
-    const [city, setCity] = useState('');
-    const [type, setType] = useState('');
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+
+    const [city, setCity] = useState(searchParams.get('city') ? [searchParams.get('city')] : []);
+    const [type, setType] = useState(searchParams.get('type') || '');
     const [rooms, setRooms] = useState('');
-    const [price, setPrice] = useState([0, 500000]);
-    const [area, setArea] = useState([0, 500]);
+    const [price, setPrice] = useState([
+        Number(searchParams.get('minPrice')) || 0,
+        Number(searchParams.get('maxPrice')) || 500000,
+    ]);
+    const [area, setArea] = useState([
+        Number(searchParams.get('minArea')) || 0,
+        Number(searchParams.get('maxArea')) || 500,
+    ]);
     const [open, setOpen] = useState(false);
     const [floor, setFloor] = useState('');
     const [furnished, setFurnished] = useState(false);
@@ -29,6 +39,7 @@ const PropertiesScreen = () => {
     const [pages, setPages] = useState(1);
     const [cities, setCities] = useState([]);
     const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         const fetchCities = async () => {
@@ -54,6 +65,13 @@ const PropertiesScreen = () => {
             if (price[1] < 500000) params.append('maxPrice', price[1]);
             if (area[0] > 0) params.append('minArea', area[0]);
             if (area[1] < 500) params.append('maxArea', area[1]);
+            if (furnished) params.append('furnished', true);
+            if (parking) params.append('parking', true);
+            if (elevator) params.append('elevator', true);
+            if (videoSurveillance) params.append('videoSurveillance', true);
+            if (floor) params.append('floor', floor);
+            if (heating.length > 0) params.append('heating', heating.join(','));
+            if (sort) params.append('sort', sort);
             params.append('page', page);
 
             const { data } = await axiosInstance.get(`/properties?${params.toString()}`);
@@ -69,7 +87,25 @@ const PropertiesScreen = () => {
 
     useEffect(() => {
         fetchProperties();
-    }, [page]);
+    }, [page, sort, location.search]);
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        if (searchParams.get('city')) setCity([searchParams.get('city')]);
+        if (searchParams.get('type')) setType(searchParams.get('type'));
+        if (searchParams.get('minPrice') || searchParams.get('maxPrice')) {
+            setPrice([
+                Number(searchParams.get('minPrice')) || 0,
+                Number(searchParams.get('maxPrice')) || 500000,
+            ]);
+        }
+        if (searchParams.get('minArea') || searchParams.get('maxArea')) {
+            setArea([
+                Number(searchParams.get('minArea')) || 0,
+                Number(searchParams.get('maxArea')) || 500,
+            ]);
+        }
+    }, [location.search]);
 
     const handleHeatingChange = (value) => {
         setHeating(prev =>

@@ -3,7 +3,7 @@ const { paypal, client } = require("../config/paypal");
 const Property = require("../models/Property");
 
 const createOrder = expressAsyncHandler(async (req, res) => {
-  const { propertyId, plan } = req.body;
+  const { plan } = req.body;
 
   const amount = plan === "featured" ? "20.00" : "5.00";
 
@@ -30,7 +30,7 @@ const createOrder = expressAsyncHandler(async (req, res) => {
 });
 
 const captureOrder = expressAsyncHandler(async (req, res) => {
-  const { orderID, propertyId, plan } = req.body;
+  const { orderID, plan, propertyData } = req.body;
 
   const request = new paypal.orders.OrdersCaptureRequest(orderID);
   request.requestBody({});
@@ -38,17 +38,19 @@ const captureOrder = expressAsyncHandler(async (req, res) => {
   const capture = await client.execute(request);
 
   if (capture.result.status === "COMPLETED") {
-    if (plan === "featured") {
-      const featuredUntil = new Date();
-      featuredUntil.setDate(featuredUntil.getDate() + 30);
+    const isFeatured = plan === "featured";
+    const featuredUntil = isFeatured
+      ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      : null;
 
-      await Property.findByIdAndUpdate(propertyId, {
-        isFeatured: true,
-        featuredUntil,
-      });
-    }
+    const property = await Property.create({
+      ...propertyData,
+      isFeatured,
+      featuredUntil,
+      owner: req.user._id,
+    });
 
-    res.json({ success: true, status: capture.result.status });
+    res.json({ success: true, propertyId: property._id });
   } else {
     res.status(400);
     throw new Error("Plaćanje nije uspelo");

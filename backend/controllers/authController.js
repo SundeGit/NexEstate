@@ -7,7 +7,7 @@ const generateToken = (id) => {
 };
 
 const registerUser = expressAsyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone } = req.body;
 
   const userExists = await User.findOne({ email });
   if (userExists) {
@@ -15,13 +15,14 @@ const registerUser = expressAsyncHandler(async (req, res) => {
     throw new Error("Korisnik sa ovim emailom već postoji");
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ name, email, password, phone });
 
   if (user) {
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
       avatar: user.avatar,
       isAdmin: user.isAdmin,
       savedProperties: user.savedProperties,
@@ -43,6 +44,7 @@ const loginUser = expressAsyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
       avatar: user.avatar,
       isAdmin: user.isAdmin,
       savedProperties: user.savedProperties,

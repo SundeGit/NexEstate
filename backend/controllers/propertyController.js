@@ -17,13 +17,25 @@ const getProperties = expressAsyncHandler(async (req, res) => {
   if (req.query.minArea) filters.area = { $gte: Number(req.query.minArea) };
   if (req.query.maxArea)
     filters.area = { ...filters.area, $lte: Number(req.query.maxArea) };
+  if (req.query.furnished) filters.furnished = req.query.furnished === 'true';
+  if (req.query.parking) filters.parking = req.query.parking === 'true';
+  if (req.query.elevator) filters.elevator = req.query.elevator === 'true';
+  if (req.query.videoSurveillance) filters.videoSurveillance = req.query.videoSurveillance === 'true';
+  if (req.query.floor) filters.floor = req.query.floor;
+  if (req.query.heating) filters.heating = { $in: req.query.heating.split(',') };
+
+  let sortOption = { createdAt: -1 };
+  if (req.query.sort === 'price-asc') sortOption = { price: 1 };
+  if (req.query.sort === 'price-desc') sortOption = { price: -1 };
+  if (req.query.sort === 'area-asc') sortOption = { area: 1 };
+  if (req.query.sort === 'area-desc') sortOption = { area: -1 };
 
   const count = await Property.countDocuments(filters);
   const properties = await Property.find(filters)
     .populate("owner", "name email avatar")
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-    .sort({ createdAt: -1 });
+    .sort(sortOption);
 
   res.json({
     properties,
@@ -63,6 +75,8 @@ const createProperty = expressAsyncHandler(async (req, res) => {
         heating,
         city,
         address,
+        isFeatured,
+        featuredUntil,
     } = req.body;
 
     const geoData = await geocoder.geocode(`${address}, ${city}`);
@@ -90,6 +104,8 @@ const createProperty = expressAsyncHandler(async (req, res) => {
         address,
         coordinates,
         images,
+        isFeatured: isFeatured === 'true',
+        featuredUntil: featuredUntil || null,
         owner: req.user._id,
     });
 
