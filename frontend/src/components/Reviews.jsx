@@ -1,8 +1,13 @@
+import { useEffect, useState } from 'react';
 import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Container } from "react-bootstrap";
-import { reviews, getInitials } from '../assets/testData';
+import axiosInstance from '../utils/axiosInstance';
+
+const getInitials = (name) => {
+  return name.split(' ').map(n => n[0]).join('').toUpperCase();
+};
 
 const settings = {
   dots: true,
@@ -23,6 +28,22 @@ const settings = {
 };
 
 const Reviews = () => {
+    const [reviews, setReviews] = useState([]);
+
+    useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const { data } = await axiosInstance.get('/reviews');
+        setReviews(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchReviews();
+  }, []);
+
+  if (reviews.length === 0) return null;
+
     return (
         <div className="py-5 mt-5">
             <Container>

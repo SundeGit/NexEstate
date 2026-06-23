@@ -1,9 +1,36 @@
+import { useState } from 'react';
 import { Container, Row, Col, Form, Button, FormGroup } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { FaFacebook, FaInstagram, FaBuilding, FaPhone, FaHome, FaTag, FaDollarSign, FaClipboardList, FaUser } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import axiosInstance from '../utils/axiosInstance';
 import logo from '../assets/NexEstateLogo.png';
 
 const Footer = () => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [text, setText] = useState('');
+
+    const handleSubmit = async () => {
+        if (!firstName || !lastName || !text) {
+            toast.error('Sva polja su obavezna');
+            return;
+        }
+        try {
+            await axiosInstance.post('/reviews', {
+                fullName: `${firstName} ${lastName}`,
+                text,
+            });
+            toast.success('Recenzija uspešno poslata!');
+            setFirstName('');
+            setLastName('');
+            setText('');
+        } catch (error) {
+            toast.error('Greška pri slanju recenzije');
+        }
+    };
+
+
     return (
         <footer className="bg-dark text-white mt-5">
             <Container className="py-5">
@@ -67,11 +94,11 @@ const Footer = () => {
                     <Col md={6}>
                         <h6 className="text-success text-uppercase mb-3">Ostavi recenziju</h6>
                         <Form>
-                            <Form.Control type="text" placeholder="Vaše ime" className="bg-dark text-white border-secondary mb-2" />
-                            <Form.Control type="text" placeholder="Vaše prezime" className="bg-dark text-white border-secondary mb-2" />
-                            <Form.Control as="textarea" rows={3} placeholder="Recenzija..." className="bg-dark text-white border-secondary mb-2" />
+                            <Form.Control type="text" placeholder="Vaše ime" className="bg-dark text-white border-secondary mb-2" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                            <Form.Control type="text" placeholder="Vaše prezime" className="bg-dark text-white border-secondary mb-2" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                            <Form.Control as="textarea" rows={3} placeholder="Recenzija..." className="bg-dark text-white border-secondary mb-2" value={text} onChange={(e) => setText(e.target.value)} />
 
-                            <Button variant="success" size="md" className="w-50">Pošalji</Button>
+                            <Button variant="success" size="md" className="w-50" onClick={handleSubmit} >Pošalji</Button>
                         </Form>
                     </Col>
                 </Row>

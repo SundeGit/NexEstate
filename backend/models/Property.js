@@ -43,6 +43,10 @@ const propertySchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    videoSurveillance: {
+      type: Boolean,
+      default: false,
+    },
     heating: [
       {
         type: String,

@@ -1,10 +1,10 @@
 import { Navbar, Nav, Container, Button , NavDropdown } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { FaClipboardList, FaPlus, FaSignInAlt, FaDollarSign, FaUser } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import logo from '../assets/NexEstateLogo.png';
 
 const Header = () => {
@@ -14,6 +14,7 @@ const Header = () => {
 
     const handleLogout = () => {
         dispatch(logout());
+        toast.success('Uspešna odjava, očekujemo Vas uskoro!');
         navigate('/login');
     };
 

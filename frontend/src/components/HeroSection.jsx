@@ -53,7 +53,7 @@ const HeroSection = () => {
                                 range 
                                 min={0} 
                                 max={500000} 
-                                step={500} 
+                                step={100} 
                                 value={price} 
                                 onChange={setPrice} 
                                 trackStyle={[{ backgroundColor: '#4caf50' }]}
@@ -69,7 +69,7 @@ const HeroSection = () => {
                                 range
                                 min={0}
                                 max={500}
-                                step={10}
+                                step={5}
                                 value={area}
                                 onChange={setArea}
                                 trackStyle={[{ backgroundColor: '#4caf50' }]}

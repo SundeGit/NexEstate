@@ -1,11 +1,11 @@
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import PropertyCard from '../components/PropertyCard';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Collapse } from 'react-bootstrap';
-import { cities, properties } from '../assets/testData';
+import axiosInstance from '../utils/axiosInstance';
 
 const PropertiesScreen = () => {
 
@@ -15,6 +15,72 @@ const PropertiesScreen = () => {
     const [price, setPrice] = useState([0, 500000]);
     const [area, setArea] = useState([0, 500]);
     const [open, setOpen] = useState(false);
+    const [floor, setFloor] = useState('');
+    const [furnished, setFurnished] = useState(false);
+    const [parking, setParking] = useState(false);
+    const [elevator, setElevator] = useState(false);
+    const [videoSurveillance, setVideoSurveillance] = useState(false);
+    const [heating, setHeating] = useState([]);
+    const [sort, setSort] = useState('');
+
+    const [properties, setProperties] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(1);
+    const [pages, setPages] = useState(1);
+    const [cities, setCities] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCities = async () => {
+            try {
+                const { data } = await axiosInstance.get('/properties');
+                const uniqueCities = [...new Set(data.properties.map(p => p.city))];
+                setCities(uniqueCities);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchCities();
+    }, []);
+
+    const fetchProperties = async () => {
+        setLoading(true);
+        try {
+            const params = new URLSearchParams();
+            if (type && type !== 'sve') params.append('type', type);
+            if (rooms) params.append('rooms', rooms);
+            if (city.length > 0) params.append('city', city[0]);
+            if (price[0] > 0) params.append('minPrice', price[0]);
+            if (price[1] < 500000) params.append('maxPrice', price[1]);
+            if (area[0] > 0) params.append('minArea', area[0]);
+            if (area[1] < 500) params.append('maxArea', area[1]);
+            params.append('page', page);
+
+            const { data } = await axiosInstance.get(`/properties?${params.toString()}`);
+            setProperties(data.properties);
+            setTotal(data.total);
+            setPages(data.pages);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProperties();
+    }, [page]);
+
+    const handleHeatingChange = (value) => {
+        setHeating(prev =>
+            prev.includes(value) ? prev.filter(h => h !== value) : [...prev, value]
+        );
+    };
+
+    const handleApplyFilters = () => {
+        setPage(1);
+        fetchProperties();
+    };
 
     return (
         <Container className="py-5">
@@ -58,7 +124,7 @@ const PropertiesScreen = () => {
                             range
                             min={0}
                             max={500000}
-                            step={500}
+                            step={100}
                             value={price}
                             onChange={setPrice}
                             trackStyle={[{ backgroundColor: '#4caf50' }]}
@@ -71,7 +137,7 @@ const PropertiesScreen = () => {
                             range
                             min={0}
                             max={500}
-                            step={10}
+                            step={5}
                             value={area}
                             onChange={setArea}
                             trackStyle={[{ backgroundColor: '#4caf50' }]}
@@ -97,7 +163,7 @@ const PropertiesScreen = () => {
 
                         <Collapse in={open}>
                             <div>
-                                <Form.Select className="bg-dark text-white border-secondary mb-3 mt-2">
+                                <Form.Select value={floor} onChange={(e) => setFloor(e.target.value)} className="bg-dark text-white border-secondary mb-3 mt-2">
                                     <option value="">Sprat</option>
                                     <option value="prizemlje">Prizemlje</option>
                                     <option value="nisko-prizemlje">Nisko prizemlje</option>
@@ -124,33 +190,34 @@ const PropertiesScreen = () => {
                                     <option value="20">Dvadeseti</option>
                                 </Form.Select>
 
-                                <Form.Check type="checkbox" label="Namešten" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Parking mesto" className="text-white mb-2" />
+                                <Form.Check type="checkbox" label="Namešten" className="text-white mb-2"
+                                checked={furnished} onChange={(e) => setFurnished(e.target.checked)} />
+                                <Form.Check type="checkbox" label="Parking mesto" className="text-white mb-2"
+                                checked={parking} onChange={(e) => setParking(e.target.checked)} />
 
                                 <p className="text-white mb-2 mt-3">Infrastruktura:</p>
-                                <Form.Check type="checkbox" label="Lift" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Video nadzor" className="text-white mb-2" />
+                                <Form.Check type="checkbox" label="Lift" className="text-white mb-2"
+                                checked={elevator} onChange={(e) => setElevator(e.target.checked)} />
+                                <Form.Check type="checkbox" label="Video nadzor" className="text-white mb-2"
+                                checked={videoSurveillance} onChange={(e) => setVideoSurveillance(e.target.checked)} />
 
                                 <p className="text-white mb-2 mt-3">Grejanje:</p>
-                                <Form.Check type="checkbox" label="Podno grejanje" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Centralno" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Etažno" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Toplotna pumpa" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Klima" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Gas" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Struja" className="text-white mb-2" />
-                                <Form.Check type="checkbox" label="Ostalo" className="text-white mb-2" />
+                                 {['Podno', 'Centralno', 'Etažno', 'Toplotna pumpa', 'Klima', 'Gas', 'Struja', 'Ostalo'].map(h => (
+                                    <Form.Check key={h} type="checkbox" label={h} className="text-white mb-2"
+                                        checked={heating.includes(h)}
+                                        onChange={() => handleHeatingChange(h)} />
+                                ))}
                             </div>
                         </Collapse>
 
-                        <Button variant="success" className="w-100 mt-3">Primeni filtere</Button>
+                        <Button variant="success" className="w-100 mt-3" onClick={handleApplyFilters} >Primeni filtere</Button>
                     </div>
                 </Col>
 
                 <Col md={8}>
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h5 className="fw-bold mb-0">{properties.length} oglasa</h5>
-                         <Form.Select className="w-25">
+                        <h5 className="fw-bold mb-0">{total} oglasa</h5>
+                         <Form.Select className="w-25" value={sort} onChange={(e) => setSort(e.target.value)}>
                         <option value="">Sortiraj</option>
                         <option value="price-asc">Cena rastuće</option>
                         <option value="price-desc">Cena opadajuće</option>
@@ -158,13 +225,35 @@ const PropertiesScreen = () => {
                         <option value="area-desc">Površina opadajuće</option>
                         </Form.Select>
                     </div>
-                    <Row>
-                        {properties.map((property) => (
-                            <Col key={property._id} sm={12} md={6} className="mb-4">
-                                <PropertyCard property={property} />
-                            </Col>
-                        ))}
-                    </Row>
+                    
+                    {loading ? (
+                        <p className="text-center">Učitavanje...</p>
+                    ) : properties.length === 0 ? (
+                        <p className="text-center">Nema oglasa za zadate filtere.</p>
+                    ) : (
+                        <Row>
+                            {properties.map((property) => (
+                                <Col key={property._id} sm={12} md={6} className="mb-4">
+                                    <PropertyCard property={property} />
+                                </Col>
+                            ))}
+                        </Row>
+                    )}
+
+                    {pages > 1 && (
+                        <div className="d-flex justify-content-center gap-2 mt-4">
+                            {[...Array(pages)].map((_, i) => (
+                                <Button
+                                    key={i}
+                                    variant={page === i + 1 ? 'success' : 'outline-success'}
+                                    onClick={() => setPage(i + 1)}
+                                >
+                                    {i + 1}
+                                </Button>
+                            ))}
+                        </div>
+                    )}
+                    
                 </Col>
             </Row>
         </Container>

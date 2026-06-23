@@ -34,9 +34,10 @@ const LoginScreen = () => {
             password: loginPassword,
         });
         dispatch(setCredentials(data));
+        toast.success('Uspešno ste se prijavili!');
         navigate('/');
         } catch (error) {
-        toast.error(error.response?.data?.message || 'Greška pri prijavi');
+        toast.error(error.response?.data?.message || 'Pogrešna email adresa ili lozinka');
         }
     };
 
@@ -58,6 +59,7 @@ const LoginScreen = () => {
             password: registerPassword,
         });
         dispatch(setCredentials(data));
+        toast.success('Uspešno ste se registrovali!');
         navigate('/');
         } catch (error) {
         toast.error(error.response?.data?.message || 'Greška pri registraciji');
