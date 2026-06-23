@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from './store';
 import App from './App';
 import './styles/index.css';
 import reportWebVitals from './reportWebVitals';
@@ -14,6 +16,7 @@ import CreatePropertyListing from './screens/CreatePropertyListing';
 import MyPropertyListingsScreen from './screens/MyPropertyListingsScreen';
 import AboutUsScreen from './screens/AboutUsScreen';
 import PricingScreen from './screens/PricingScreen';
+import PrivateRoute from './components/PrivateRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,8 +25,12 @@ const router = createBrowserRouter(
       <Route path="/property" element={<PropertiesScreen />} />
       <Route path="/property/:id" element={<PropertyInfoScreen />} />
       <Route path="/login" element={<LoginScreen />} />
-      <Route path="/createPropertyListing" element={<CreatePropertyListing />} />
-      <Route path="/myPropertyListings" element={<MyPropertyListingsScreen />} />
+
+      <Route path='' element={<PrivateRoute />}>
+        <Route path="/createPropertyListing" element={<CreatePropertyListing />} />
+        <Route path="/myPropertyListings" element={<MyPropertyListingsScreen />} />
+      </Route>
+
       <Route path="/aboutUs" element={<AboutUsScreen />} />
       <Route path="/pricing" element={<PricingScreen />} />
     </Route>
@@ -33,7 +40,9 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
 
