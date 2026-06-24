@@ -33,9 +33,8 @@ const HeroSection = () => {
     useEffect(() => {
         const fetchCities = async () => {
             try {
-                const { data } = await axiosInstance.get('/properties');
-                const uniqueCities = [...new Set(data.properties.map(p => p.city))];
-                setCities(uniqueCities);
+                const { data } = await axiosInstance.get('/properties/cities');
+                setCities(data);
             } catch (error) {
                 console.error(error);
             }

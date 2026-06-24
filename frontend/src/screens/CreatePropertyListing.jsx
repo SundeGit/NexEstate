@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import PropertyCard from '../components/PropertyCard';
 import axiosInstance from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../components/Loader';
 
 const heatingOptions = ['Podno', 'Centralno', 'Etažno', 'Toplotna pumpa', 'Klima', 'Gas', 'Struja', 'Ostalo'];
 
@@ -381,7 +382,7 @@ const CreateListingScreen = () => {
 
             {uploading && (
               <div className="text-center mb-3">
-                <Spinner animation="border" variant="success" size="sm" className="me-2" />
+                <Loader />
                 <span className="text-muted">Upload slika...</span>
               </div>
             )}

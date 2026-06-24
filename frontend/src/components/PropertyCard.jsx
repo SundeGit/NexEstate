@@ -2,6 +2,7 @@ import  { Card } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
+
 const typeLabels = {
   stan: 'Stan',
   kuca: 'Kuća',

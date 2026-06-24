@@ -30,6 +30,10 @@ textarea.form-control::placeholder {
   cursor: pointer;
 }
 
+.featuredCard {
+  height: 500px;
+}
+
 .ribbon {
   position: absolute;
   top: 15px;

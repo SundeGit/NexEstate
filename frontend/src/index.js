@@ -12,11 +12,14 @@ import HomeScreen from './screens/HomeScreen';
 import PropertiesScreen from './screens/PropertiesScreen';
 import PropertyInfoScreen from './screens/PropertyInfoScreen';
 import LoginScreen from './screens/LoginScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import CreatePropertyListing from './screens/CreatePropertyListing';
 import MyPropertyListingsScreen from './screens/MyPropertyListingsScreen';
 import AboutUsScreen from './screens/AboutUsScreen';
 import PricingScreen from './screens/PricingScreen';
 import PrivateRoute from './components/PrivateRoute';
+import AdminScreen from './screens/AdminScreen';
+import AdminRoute from './components/AdminRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,6 +32,11 @@ const router = createBrowserRouter(
       <Route path='' element={<PrivateRoute />}>
         <Route path="/createPropertyListing" element={<CreatePropertyListing />} />
         <Route path="/myPropertyListings" element={<MyPropertyListingsScreen />} />
+        <Route path="/profile" element={<ProfileScreen />} />
+      </Route>
+
+      <Route path='' element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminScreen />} />
       </Route>
 
       <Route path="/aboutUs" element={<AboutUsScreen />} />

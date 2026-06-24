@@ -9,6 +9,17 @@ const generateToken = (id) => {
 const registerUser = expressAsyncHandler(async (req, res) => {
   const { name, email, password, phone } = req.body;
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    res.status(400);
+    throw new Error('Nevalidna email adresa');
+  }
+
+  if (password.length < 8) {
+    res.status(400);
+    throw new Error('Lozinka mora imati najmanje 8 karaktera');
+  }
+
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);

@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
+import Loader from '../components/Loader';
 
 delete L.Icon.Default.prototype._getUrl;
 L.Icon.Default.mergeOptions({
@@ -19,6 +20,15 @@ L.Icon.Default.mergeOptions({
 const getInitials = (name) => {
     if (!name) return '?';
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+};
+
+const typeLabels = {
+  stan: 'Stan',
+  kuca: 'Kuća',
+  vikendica: 'Vikendica',
+  garaza: 'Garaža',
+  plac: 'Plac',
+  'poslovni-prostor': 'Poslovni prostor',
 };
 
 const PropertyInfoScreen = () => {
@@ -61,7 +71,7 @@ const PropertyInfoScreen = () => {
         }
     };
 
-    if (loading) return <Container className="py-5"><p>Učitavanje...</p></Container>;
+    if (loading) return <Loader />
     if (!property) return <Container className="py-5"><h2>Oglas nije pronađen!</h2></Container>;
 
     const hasCoords = property.coordinates?.lat && property.coordinates?.lng;
@@ -152,7 +162,7 @@ const PropertyInfoScreen = () => {
                     <Row className="mb-3 mt-3">
                         <Col xs={6}>
                             <small className="text-muted">Tip</small>
-                            <p className="mb-0 fw-bold">{property.type}</p>
+                            <p className="mb-0 fw-bold">{typeLabels[property.type] || property.type}</p>
                         </Col>
                         <Col xs={6}>
                             <small className="text-muted">Površina</small>
@@ -203,12 +213,18 @@ const PropertyInfoScreen = () => {
                     <div className="p-4 rounded border border-secondary">
                         <h5 className="fw-bold mb-4">Kontakt</h5>
                         <div className="d-flex align-items-center mb-4">
+                            {property.owner?.avatar ? (
+                                <img src={property.owner.avatar} alt={property.owner.name} className="rounded-circle" style={{ width: '55px', height: '55px', objectFit: 'cover' }}
+                                />
+                            ) : (
                             <div
                                 className="rounded-circle bg-success d-flex align-items-center justify-content-center text-white fw-bold me-3"
                                 style={{ width: '55px', height: '55px', minWidth: '55px' }}
                             >
                                 {getInitials(property.owner?.name)}
                             </div>
+                            )}
+
                             <h6 className="mb-0 fw-bold">{property.owner?.name}</h6>
                         </div>
                         <a href={`tel:${property.owner?.phone}`} className="btn btn-success w-100">

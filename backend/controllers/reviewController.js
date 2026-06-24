@@ -2,7 +2,7 @@ const expressAsyncHandler = require("express-async-handler");
 const Review = require("../models/Review");
 
 const getReviews = expressAsyncHandler(async (req, res) => {
-  const reviews = await Review.find().sort({ createdAt: -1 });
+  const reviews = await Review.find().sort({ createdAt: -1 }).limit(10);
   res.json(reviews);
 });
 

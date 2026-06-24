@@ -157,7 +157,7 @@ const getFeaturedProperties = expressAsyncHandler(async (req, res) => {
   const properties = await Property.find({
     isFeatured: true,
     featuredUntil: { $gte: now },
-  }).populate("owner", "name email avatar");
+  }).populate("owner", "name email avatar").sort({ createdAt: -1 }).limit(20);
 
   res.json(properties);
 });
@@ -169,6 +169,11 @@ const getMyProperties = expressAsyncHandler(async (req, res) => {
   res.json(properties);
 });
 
+const getCities = expressAsyncHandler(async (req, res) => {
+  const cities = await Property.distinct('city');
+  res.json(cities);
+});
+
 module.exports = {
   getProperties,
   getPropertyById,
@@ -177,4 +182,5 @@ module.exports = {
   deleteProperty,
   getFeaturedProperties,
   getMyProperties,
+  getCities,
 };

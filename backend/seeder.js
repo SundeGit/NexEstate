@@ -1,0 +1,406 @@
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const Property = require('./models/Property');
+const Review = require('./models/Review');
+const User = require('./models/User');
+
+dotenv.config();
+
+const reviews = [
+    { fullName: 'Marko Nikolić', text: 'Odlična platforma, pronašao sam stan za mesec dana. Preporučujem svima!' },
+    { fullName: 'Ana Jovanović', text: 'Veoma jednostavno za korišćenje, oglasi su detaljni i ažurni.' },
+    { fullName: 'Stefan Petrović', text: 'Prodao sam kuću za 3 nedelje zahvaljujući ovom sajtu. Fantastično!' },
+    { fullName: 'Jelena Stojanović', text: 'Konačno platforma koja ima sve na jednom mestu. Brzo i efikasno.' },
+    { fullName: 'Nikola Đorđević', text: 'Iznajmio stan bez ikakvih problema. Kontakt sa oglašivačem je bio jednostavan.' },
+    { fullName: 'Maja Ilić', text: 'Super iskustvo, filteri su odlični i olakšali su mi pretragu.' },
+    { fullName: 'Aleksandar Marinković', text: 'Profesionalan sajt, sve informacije su jasne i precizne.' },
+    { fullName: 'Tijana Pavlović', text: 'Pronašla sam vikendicu iz snova! Hvala NexEstate timu.' },
+];
+
+const properties = [
+    {
+        title: 'Moderan trosoban stan u centru Beograda',
+        description: 'Prostran trosoban stan sa renoviranim enterijerom, parketom i novom kuhinjom. Odlična lokacija, blizu svih sadržaja.',
+        price: 185000, type: 'stan', rooms: 3, area: 85, floor: '4',
+        city: 'Beograd', address: 'Knez Mihailova 12',
+        furnished: true, parking: false, elevator: true, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600', 'https://unsplash.com/photos/green-plant-on-white-ceramic-pot-IH7wPsjwomc?w=600', 'https://unsplash.com/photos/living-room-with-tan-leather-sectional-sofa-umAXneH4GhA?w=600', 'https://unsplash.com/photos/white-and-brown-kitchen-cabinet--aDGbdTsBZg?w=600', 'https://unsplash.com/photos/black-table-lamp-on-nightstand-GqbU78bdJFM?w=600', 'https://unsplash.com/photos/interior-of-modern-bedroom-with-armchair-and-blue-wall-in-spacious-bedroom-interior-with-gray-blanket3d-rendering-SLjjwn9BMfM?w=600' ],
+        coordinates: { lat: 44.8176, lng: 20.4569 },
+    },
+    {
+        title: 'Jednosoban stan na Vračaru',
+        description: 'Kompletno renoviran jednosoban stan, useljivost odmah. Mirna ulica, blizu Hrama.',
+        price: 95000, type: 'stan', rooms: 1, area: 42, floor: '2',
+        city: 'Beograd', address: 'Njegoševa 34',
+        furnished: true, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Etažno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600', 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D?w=600', 'https://images.unsplash.com/photo-1618220179428-22790b461013?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGJlZHJvb218ZW58MHx8MHx8fDA%3D?w=600', 'https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fGtpdGNoZW58ZW58MHx8MHx8fDA%3D?w=600'],
+        coordinates: { lat: 44.8010, lng: 20.4671 },
+    },
+    {
+        title: 'Kuća sa bazenom na Dedinju',
+        description: 'Luksuzna porodična kuća sa bazenom, garažom i velikom baštom. Prestižna lokacija.',
+        price: 650000, type: 'kuca', rooms: 5, area: 280, floor: '0',
+        city: 'Beograd', address: 'Užička 22',
+        furnished: true, parking: true, elevator: false, videoSurveillance: true,
+        heating: ['Podno', 'Centralno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG91c2V8ZW58MHx8MHx8fDA%3Dw=600', 'https://plus.unsplash.com/premium_photo-1676823547752-1d24e8597047?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG91c2UlMjBpbnRlcmlvcnxlbnwwfHwwfHx8MA%3D%3D?w=600', 'https://unsplash.com/photos/a-living-room-with-a-large-window-fobX0HI9vVo?w=600', 'https://plus.unsplash.com/premium_photo-1676823553207-758c7a66e9bb?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZGluaW5nJTIwcm9vbXxlbnwwfHwwfHx8MA%3D%3D?w=600', 'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2l0Y2hlbnxlbnwwfHwwfHx8MA%3D%3D?w=600'],
+        coordinates: { lat: 44.7731, lng: 20.4478 },
+    },
+    {
+        title: 'Dvosoban stan na Novom Beogradu',
+        description: 'Svetao dvosoban stan u novogradnji, uknjižen, bez posrednika.',
+        price: 115000, type: 'stan', rooms: 2, area: 58, floor: '7',
+        city: 'Beograd', address: 'Jurija Gagarina 14',
+        furnished: false, parking: true, elevator: true, videoSurveillance: true,
+        heating: ['Centralno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600'],
+        coordinates: { lat: 44.8060, lng: 20.4040 },
+    },
+    {
+        title: 'Garsonjera u Zemunu',
+        description: 'Funkcionalna garsonjera, odlična za studente ili mlade parove. Blizu autobuske stanice.',
+        price: 52000, type: 'stan', rooms: 0.5, area: 28, floor: '1',
+        city: 'Beograd', address: 'Glavna 5, Zemun',
+        furnished: true, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Struja'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600'],
+        coordinates: { lat: 44.8456, lng: 20.4012 },
+    },
+    {
+        title: 'Poslovni prostor na Slaviji',
+        description: 'Reprezentativan poslovni prostor u pešačkoj zoni, pogodan za kancelarije ili salon.',
+        price: 220000, type: 'poslovni-prostor', area: 95, floor: '0',
+        city: 'Beograd', address: 'Kralja Milana 10',
+        furnished: false, parking: false, elevator: true, videoSurveillance: true,
+        heating: ['Centralno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1497366216548-37526070297c?w=600', 'https://unsplash.com/photos/group-of-people-having-a-meeting-VBLHICVh-lI?w=600'],
+        coordinates: { lat: 44.8041, lng: 20.4650 },
+    },
+    {
+        title: 'Vikendica na Zlatiboru',
+        description: 'Drvena vikendica sa pogledom na planinu, okružena prirodom. Idealna za odmor.',
+        price: 88000, type: 'vikendica', rooms: 2, area: 65, floor: '0',
+        city: 'Zlatibor', address: 'Naselje Rožanstvo bb',
+        furnished: true, parking: true, elevator: false, videoSurveillance: false,
+        heating: ['Etažno', 'Gas'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=600', 'https://unsplash.com/photos/brown-wooden-house-near-green-trees-and-mountain-during-daytime-wll3ClSPvKM?w=600', 'https://unsplash.com/photos/a-small-cabin-on-a-grassy-hill-with-mountains-in-the-background-F1LcsrsSdLo?w=600'],
+        coordinates: { lat: 43.7300, lng: 19.6930 },
+    },
+    {
+        title: 'Trosoban stan u Nišu',
+        description: 'Prostran trosoban stan u mirnom delu grada, idealan za porodicu.',
+        price: 78000, type: 'stan', rooms: 3, area: 78, floor: '3',
+        city: 'Niš', address: 'Obrenovićeva 45',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600'],
+        coordinates: { lat: 43.3209, lng: 21.8958 },
+    },
+    {
+        title: 'Stan u novogradnji u Novom Sadu',
+        description: 'Moderan dvoiposoban stan u novoizgrađenoj zgradi sa podzemnom garažom.',
+        price: 132000, type: 'stan', rooms: 2.5, area: 68, floor: '5',
+        city: 'Novi Sad', address: 'Bulevar Evrope 22',
+        furnished: false, parking: true, elevator: true, videoSurveillance: true,
+        heating: ['Podno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600'],
+        coordinates: { lat: 45.2671, lng: 19.8335 },
+    },
+    {
+        title: 'Kuća u Sremskim Karlovcima',
+        description: 'Starinska kuća sa velikom baštom i podrumom. Mirno mesto, blizu Dunava.',
+        price: 145000, type: 'kuca', rooms: 4, area: 160, floor: '0',
+        city: 'Sremski Karlovci', address: 'Patrijarha Rajića 8',
+        furnished: false, parking: true, elevator: false, videoSurveillance: false,
+        heating: ['Gas'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600'],
+        coordinates: { lat: 45.2044, lng: 19.9325 },
+    },
+    {
+        title: 'Plac u Surdulici',
+        description: 'Građevinski plac sa dozvolom za gradnju, struja i voda dostupni.',
+        price: 18000, type: 'plac', area: 600, floor: '0',
+        city: 'Surdulica', address: 'Naselje Vlasina bb',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: [], isFeatured: false,
+        images: ['https://unsplash.com/photos/green-grass-field-near-mountain-under-blue-sky-during-daytime-ZAy8srF4rRM?w=600', 'https://unsplash.com/photos/photo-of-green-grass-field-at-sunrise-4miBe6zg5r0?w=600', 'https://unsplash.com/photos/landscape-photography-of-grass-plains-under-cloudy-sky-during-daytime-VNsGywdphUY?w=600'],
+        coordinates: { lat: 42.6897, lng: 22.1711 },
+    },
+    {
+        title: 'Garaža na Voždovcu',
+        description: 'Samostalna garaža sa automatskom kapijom, video nadzor, pogodna za čuvanje vozila.',
+        price: 22000, type: 'garaza', area: 18, floor: '0',
+        city: 'Beograd', address: 'Vojvode Stepe 112',
+        furnished: false, parking: false, elevator: false, videoSurveillance: true,
+        heating: [], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600'],
+        coordinates: { lat: 44.7780, lng: 20.4920 },
+    },
+    {
+        title: 'Četvorosoban stan na Bežanijskoj kosi',
+        description: 'Veliki porodični stan sa terasom i pogledom na grad. Uknjižen, useljivost odmah.',
+        price: 198000, type: 'stan', rooms: 4, area: 105, floor: '8',
+        city: 'Beograd', address: 'Bežanijska kosa bb',
+        furnished: true, parking: true, elevator: true, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600'],
+        coordinates: { lat: 44.8220, lng: 20.3780 },
+    },
+    {
+        title: 'Jednoiposoban stan u Kragujevcu',
+        description: 'Lepo uređen stan u centru, blizu fakulteta i tržnog centra.',
+        price: 58000, type: 'stan', rooms: 1.5, area: 47, floor: '2',
+        city: 'Kragujevac', address: 'Kralja Petra I 33',
+        furnished: true, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Etažno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600'],
+        coordinates: { lat: 44.0128, lng: 20.9114 },
+    },
+    {
+        title: 'Vikendica na Kopaoniku',
+        description: 'Moderna vikendica na 5 minuta od ski lifta. Idealna za zimovanje.',
+        price: 175000, type: 'vikendica', rooms: 3, area: 90, floor: '0',
+        city: 'Kopaonik', address: 'Naselje Srebrnac bb',
+        furnished: true, parking: true, elevator: false, videoSurveillance: false,
+        heating: ['Podno', 'Toplotna pumpa'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=600'],
+        coordinates: { lat: 43.2920, lng: 20.8110 },
+    },
+    {
+        title: 'Poslovni prostor u Novom Sadu',
+        description: 'Svetao poslovni prostor u poslovnoj zoni, parking obezbeđen.',
+        price: 98000, type: 'poslovni-prostor', area: 72, floor: '1',
+        city: 'Novi Sad', address: 'Futoška 44',
+        furnished: false, parking: true, elevator: false, videoSurveillance: true,
+        heating: ['Klima'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600'],
+        coordinates: { lat: 45.2550, lng: 19.8440 },
+    },
+    {
+        title: 'Dvosoban stan u Subotici',
+        description: 'Renoviran stan u secesijskoj zgradi u centru grada.',
+        price: 72000, type: 'stan', rooms: 2, area: 60, floor: '3',
+        city: 'Subotica', address: 'Korzo 18',
+        furnished: true, parking: false, elevator: true, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=600'],
+        coordinates: { lat: 46.1000, lng: 19.6672 },
+    },
+    {
+        title: 'Kuća u Valjevu',
+        description: 'Novija kuća sa dva stana, idealno za investiciju ili proširenu porodicu.',
+        price: 118000, type: 'kuca', rooms: 4, area: 180, floor: '0',
+        city: 'Valjevo', address: 'Vojvođanska 55',
+        furnished: false, parking: true, elevator: false, videoSurveillance: false,
+        heating: ['Gas', 'Centralno'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600'],
+        coordinates: { lat: 44.2700, lng: 19.8870 },
+    },
+    {
+        title: 'Stan na Paliluli',
+        description: 'Odličan stan blizu bolnice i tržnog centra. Uknjižen.',
+        price: 88000, type: 'stan', rooms: 2, area: 55, floor: '1',
+        city: 'Beograd', address: 'Cara Dušana 88',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=600'],
+        coordinates: { lat: 44.8230, lng: 20.4810 },
+    },
+    {
+        title: 'Plac u Inđiji',
+        description: 'Ravničarski plac pogodan za gradnju porodične kuće, asfalt i infrastruktura dostupni.',
+        price: 24000, type: 'plac', area: 800, floor: '0',
+        city: 'Inđija', address: 'Industrijska zona bb',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: [], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600'],
+        coordinates: { lat: 45.0481, lng: 20.0814 },
+    },
+    {
+        title: 'Luksuzni penthouse na Vračaru',
+        description: 'Ekskluzivan penthouse sa krovnom terasom i panoramskim pogledom na Beograd.',
+        price: 420000, type: 'stan', rooms: 4, area: 155, floor: '12',
+        city: 'Beograd', address: 'Makenzijeva 32',
+        furnished: true, parking: true, elevator: true, videoSurveillance: true,
+        heating: ['Podno', 'Klima'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1567684014761-b65e2e59b9eb?w=600'],
+        coordinates: { lat: 44.7990, lng: 20.4700 },
+    },
+    {
+        title: 'Trosoban stan u Čačku',
+        description: 'Prostran stan u mirnom kraju, blizu škole i pijace.',
+        price: 68000, type: 'stan', rooms: 3, area: 75, floor: '2',
+        city: 'Čačak', address: 'Bulevar Oslobođenja 14',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600'],
+        coordinates: { lat: 43.8914, lng: 20.3496 },
+    },
+    {
+        title: 'Garaža u Novom Sadu',
+        description: 'Garaža u podzemnoj etaži stambene zgrade, blizu centra.',
+        price: 16000, type: 'garaza', area: 15, floor: '0-',
+        city: 'Novi Sad', address: 'Bulevar Cara Lazara 5',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: [], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600'],
+        coordinates: { lat: 45.2560, lng: 19.8420 },
+    },
+    {
+        title: 'Dvosoban stan u Pančevu',
+        description: 'Uređen stan u novijoj zgradi, mirno susedstvo, blizu Beograda.',
+        price: 82000, type: 'stan', rooms: 2, area: 62, floor: '4',
+        city: 'Pančevo', address: 'Zmaj Jovina 19',
+        furnished: true, parking: true, elevator: true, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600'],
+        coordinates: { lat: 44.8708, lng: 20.6406 },
+    },
+    {
+        title: 'Kuća u Vrnjačkoj Banji',
+        description: 'Kuća u banjskom mestu, pogodna za iznajmljivanje turistima tokom sezone.',
+        price: 95000, type: 'kuca', rooms: 3, area: 120, floor: '0',
+        city: 'Vrnjačka Banja', address: 'Slobodana Penezića 7',
+        furnished: true, parking: true, elevator: false, videoSurveillance: false,
+        heating: ['Gas'], isFeatured: true,
+        images: ['https://unsplash.com/photos/outdoor-lamps-turned-on-XbwHrt87mQ0?w=600', 'https://unsplash.com/photos/living-room-L7EwHkq1B2s?w=600', 'https://unsplash.com/photos/a-living-room-filled-with-furniture-and-a-large-window-OtXADkUh3-I?w=600', 'https://unsplash.com/photos/a-living-room-filled-with-furniture-and-a-wooden-ceiling-KPK_Qn2Pc5s?w=600'],
+        coordinates: { lat: 43.6194, lng: 20.8958 },
+    },
+    {
+        title: 'Jednosoban stan u Zrenjaninu',
+        description: 'Funkcionalan jednosoban stan, useljivost odmah, bez posrednika.',
+        price: 44000, type: 'stan', rooms: 1, area: 38, floor: '3',
+        city: 'Zrenjanin', address: 'Kralja Aleksandra 21',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600'],
+        coordinates: { lat: 45.3822, lng: 20.3917 },
+    },
+    {
+        title: 'Poslovni prostor u Kragujevcu',
+        description: 'Poslovni prostor u centru grada, pogodan za frizerski salon ili apoteku.',
+        price: 55000, type: 'poslovni-prostor', area: 45, floor: '0',
+        city: 'Kragujevac', address: 'Svetozara Markovića 3',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Etažno'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1497366216548-37526070297c?w=600'],
+        coordinates: { lat: 44.0128, lng: 20.9114 },
+    },
+    {
+        title: 'Vikendica na Fruškoj Gori',
+        description: 'Manja vikendica u šumi, idealna za odmor od gradske vreve.',
+        price: 45000, type: 'vikendica', rooms: 2, area: 55, floor: '0',
+        city: 'Novi Sad', address: 'Fruška Gora, Irig',
+        furnished: true, parking: true, elevator: false, videoSurveillance: false,
+        heating: ['Struja'], isFeatured: true,
+        images: ['https://unsplash.com/photos/gray-wooden-house-178j8tJrNlc?w=600', 'https://unsplash.com/photos/black-metal-framed-glass-top-table-NxAwryAbtIw?w=600'],
+        coordinates: { lat: 45.1010, lng: 19.8520 },
+    },
+    {
+        title: 'Stan u Zemunu',
+        description: 'Renoviran stan u starom jezgru Zemuna sa pogledom na Dunav.',
+        price: 108000, type: 'stan', rooms: 2, area: 64, floor: '2',
+        city: 'Beograd', address: 'Cara Dušana 4, Zemun',
+        furnished: true, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Etažno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600'],
+        coordinates: { lat: 44.8456, lng: 20.4100 },
+    },
+    {
+        title: 'Plac u Sremskoj Mitrovici',
+        description: 'Plac u mirnom kraju, dozvoljena gradnja, komunalije priključene.',
+        price: 15000, type: 'plac', area: 500, floor: '0',
+        city: 'Sremska Mitrovica', address: 'Savska bb',
+        furnished: false, parking: false, elevator: false, videoSurveillance: false,
+        heating: [], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600'],
+        coordinates: { lat: 44.9736, lng: 19.6122 },
+    },
+    {
+        title: 'Četvorosoban stan u Nišu',
+        description: 'Prostran porodični stan blizu Niške tvrđave, uknjižen.',
+        price: 92000, type: 'stan', rooms: 4, area: 98, floor: '5',
+        city: 'Niš', address: 'Vojvode Mišića 11',
+        furnished: false, parking: true, elevator: true, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600'],
+        coordinates: { lat: 43.3187, lng: 21.9010 },
+    },
+    {
+        title: 'Kuća u Aranđelovcu',
+        description: 'Novija kuća sa baštom i garažom u mirnom kraju, blizu banje.',
+        price: 135000, type: 'kuca', rooms: 4, area: 165, floor: '0',
+        city: 'Aranđelovac', address: 'Kneginje Zorke 22',
+        furnished: false, parking: true, elevator: false, videoSurveillance: false,
+        heating: ['Gas', 'Podno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600'],
+        coordinates: { lat: 44.3036, lng: 20.5614 },
+    },
+    {
+        title: 'Dvoiposoban stan u Beogradu',
+        description: 'Stan u odličnom stanju, nova stolarija i instalacije, useljivost odmah.',
+        price: 128000, type: 'stan', rooms: 2.5, area: 66, floor: '6',
+        city: 'Beograd', address: 'Bore Stankovića 9',
+        furnished: false, parking: false, elevator: true, videoSurveillance: false,
+        heating: ['Centralno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600'],
+        coordinates: { lat: 44.8100, lng: 20.4600 },
+    },
+    {
+        title: 'Garsonjera u Novom Sadu',
+        description: 'Kompaktna garsonjera idealna za studente, blizu Univerziteta.',
+        price: 48000, type: 'stan', rooms: 0.5, area: 25, floor: '1',
+        city: 'Novi Sad', address: 'Trg Dositeja Obradovića 3',
+        furnished: true, parking: false, elevator: false, videoSurveillance: false,
+        heating: ['Etažno'], isFeatured: false,
+        images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600'],
+        coordinates: { lat: 45.2450, lng: 19.8490 },
+    },
+    {
+        title: 'Stan sa terasom u Beogradu',
+        description: 'Dvosoban stan sa velikom terasom i pogledom na park. Novogradnja.',
+        price: 142000, type: 'stan', rooms: 2, area: 72, floor: '9',
+        city: 'Beograd', address: 'Pariske komune 14',
+        furnished: false, parking: true, elevator: true, videoSurveillance: true,
+        heating: ['Podno'], isFeatured: true,
+        images: ['https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600'],
+        coordinates: { lat: 44.7950, lng: 20.4550 },
+    },
+];
+
+const seedData = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log('MongoDB povezan...');
+
+        const admin = await User.findOne({ isAdmin: true });
+        if (!admin) {
+            console.log('Nema admin korisnika! Prvo kreiraj admina.');
+            process.exit(1);
+        }
+
+        await Property.deleteMany();
+        await Review.deleteMany();
+        console.log('Stari podaci obrisani...');
+
+        const featuredUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        const propsWithOwner = properties.map(p => ({
+            ...p,
+            owner: admin._id,
+            featuredUntil: p.isFeatured ? featuredUntil : null,
+        }));
+
+        await Property.insertMany(propsWithOwner);
+        await Review.insertMany(reviews);
+
+        console.log(`Dodato ${properties.length} oglasa i ${reviews.length} recenzija!`);
+        process.exit();
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+};
+
+seedData();

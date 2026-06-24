@@ -48,7 +48,7 @@ const FeaturedProperties = () => {
       <h2 className="text-center fw-bold mb-4">Istaknuti oglasi</h2>
       <Slider {...settings}>
         {properties.map((property) => (
-          <div key={property._id} className="px-2">
+          <div key={property._id} className="px-2 featuredCard">
             <PropertyCard property={property} />
           </div>
         ))}
